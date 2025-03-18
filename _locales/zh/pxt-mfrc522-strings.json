@@ -1,0 +1,8 @@
+{
+  "MFRC522.AntennaOff|block": "关闭天线",
+  "MFRC522.Init|block": "初始化RFID模块",
+  "MFRC522.getID|block": "读取卡号",
+  "MFRC522.read|block": "读取数据",
+  "MFRC522.write|block": "写入数据 %text",
+  "{id:category}MFRC522": "MFRC522"
+}
