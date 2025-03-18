@@ -303,7 +303,7 @@ namespace MFRC522 {
 
 
         // 等待中断，添加超时处理
-        const MAX_ATTEMPTS = 500;
+        const MAX_ATTEMPTS = 5;
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             n = I2C_Read(ComIrqReg);
