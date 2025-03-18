@@ -285,45 +285,43 @@ namespace MFRC522 {
             SetBits(BitFramingReg, 0x80)
         }
 
-        let p = 500
-        while (true) {
-            n = I2C_Read(ComIrqReg)
-            p--
-            if (~(p != 0 && ~(n & 0x01) && ~(n & waitIRQ))) {
-                break
+
+        // 等待中断，添加超时处理
+        const MAX_ATTEMPTS = 500;
+        let attempts = 0;
+        while (attempts < MAX_ATTEMPTS) {
+            n = I2C_Read(ComIrqReg);
+            if ((n & 0x01) || (n & waitIRQ)) {
+                break;
             }
+            attempts++;
         }
+
         ClearBits(BitFramingReg, 0x80)
 
-        if (p != 0) {
-            if ((I2C_Read(0x06) & 0x1B) == 0x00) {
-                status = 0
+        // 检查是否超时
+        if (attempts < MAX_ATTEMPTS) {
+            const statusRegValue = I2C_Read(0x06);
+            if ((statusRegValue & 0x1B) === 0x00) {
+                status = 0;
                 if (n & irqEN & 0x01) {
-                    status = 1
+                    status = 1;
                 }
-                if (command == PCD_TRANSCEIVE) {
-                    n = I2C_Read(FIFOLevelReg)
-                    lastBits = I2C_Read(ControlReg) & 0x07
-                    if (lastBits != 0) {
-                        returnLen = (n - 1) * 8 + lastBits
-                    }
-                    else {
-                        returnLen = n * 8
-                    }
-                    if (n == 0) {
-                        n = 1
-                    }
-                    if (n > MAX_LEN) {
-                        n = MAX_LEN
-                    }
+                if (command === PCD_TRANSCEIVE) {
+                    n = I2C_Read(FIFOLevelReg);
+                    lastBits = I2C_Read(ControlReg) & 0x07;
+                    returnLen = lastBits !== 0 ? (n - 1) * 8 + lastBits : n * 8;
+                    n = Math.max(1, Math.min(n, MAX_LEN));
                     for (let q = 0; q < n; q++) {
-                        returnData.push(I2C_Read(FIFODataReg))
+                        returnData.push(I2C_Read(FIFODataReg));
                     }
                 }
+            } else {
+                status = 2;
             }
-            else {
-                status = 2
-            }
+        } else {
+            status = 2; // 超时错误
+            serial.writeLine("MFRC522_ToCard: Timeout waiting for interrupt.");
         }
 
         return [status, returnData, returnLen]
