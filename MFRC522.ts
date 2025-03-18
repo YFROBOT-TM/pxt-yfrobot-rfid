@@ -2,7 +2,7 @@
   * MFRC522 Block
   * yfrobot @ 2025
   */
-//% color="#8DDCE5" weight=100 icon="\uf2bb" block="MFRC522 RFID"
+//% color="#8DDCE5" weight=100 icon="\uf2c1" block="MFRC522 RFID"
 namespace MFRC522 {
     let Type2 = 0
     const BlockAdr: number[] = [8, 9, 10]
