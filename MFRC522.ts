@@ -96,7 +96,7 @@ namespace MFRC522 {
         let data: NumberFormat.UInt8LE[] = []
         let text_read = ''
         let block: number[] = []
-        
+        // 若身份验证成功，读取数据
         if (status == 0) {
             for (let BlockNum of BlockAdr) {
                 block = ReadRFID(BlockNum)
@@ -104,12 +104,14 @@ namespace MFRC522 {
                     data = data.concat(block)
                 }
             }
-        if (data) {
-            text_read = data.map(c => String.fromCharCode(c)).join('');
+            if (data.length > 0) {// 将数据转换为文本
+                text_read = data.map(c => String.fromCharCode(c)).join('');
+            }
+        } else {
+            serial.writeLine("Authentication failed.");
         }
 
-        }
-        Crypto1Stop()
+        Crypto1Stop() // 停止加密
         return text_read
     }
 
@@ -163,7 +165,21 @@ namespace MFRC522 {
         pOut2 = CRC_Calculation(recvData)
         recvData.push(pOut2[0])
         recvData.push(pOut2[1])
-        let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, recvData)
+
+        const MAX_ATTEMPTS = 500; // 最大尝试次数
+        let attempts = 0;
+        while (attempts < MAX_ATTEMPTS) {
+            let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, recvData)
+            if (status == 0) {
+                break; // 成功读取数据，退出循环
+            }
+            attempts++;
+        }
+
+        if (attempts >= MAX_ATTEMPTS) {
+            serial.writeLine(`Timeout while reading block ${blockAdr}`);
+            return null;
+        }
 
         if (status != 0) {
             serial.writeLine("Error while reading!")
@@ -171,8 +187,7 @@ namespace MFRC522 {
 
         if (returnData.length != 16) {
             return null
-        }
-        else {
+        } else {
             return returnData
         }
     }
