@@ -79,13 +79,13 @@ namespace MFRC522 {
     function readFromCard(): string {
         let [status, Type2] = Request(PICC_REQIDL)
         if (status != 0) {
-            return null, null
+            return null
         }
 
         [status, uid] = AvoidColl()
 
         if (status != 0) {
-            return null, null
+            return null
         }
 
         let id = getIDNum(uid)
@@ -101,11 +101,10 @@ namespace MFRC522 {
                     data = data.concat(block)
                 }
             }
-            if (data) {
-                for (let c of data) {
-                    text_read = text_read.concat(String.fromCharCode(c))
-                }
-            }
+        if (data) {
+            text_read = data.map(c => String.fromCharCode(c)).join('');
+        }
+
         }
         Crypto1Stop()
         return text_read
@@ -117,12 +116,12 @@ namespace MFRC522 {
         [status, Type2] = Request(PICC_REQIDL)
 
         if (status != 0) {
-            return null, null
+            return null
         }
         [status, uid] = AvoidColl()
 
         if (status != 0) {
-            return null, null
+            return null
         }
 
         let id = getIDNum(uid)
@@ -455,15 +454,26 @@ namespace MFRC522 {
     //% weight=95
     export function getID() {
         let id = readID()
-        while (!(id)) {
+        let maxRetries = 2; // 设置最大重试次数
+        let retryCount = 0;
+
+        while (!id && retryCount < maxRetries) {
             id = readID()
             if (id != undefined && id >= 100000000000) {
                 return id
             }
+            retryCount++;
         }
-        serial.writeLine("Card ID: " + id)
-        return id
+
+        if (id) {
+            serial.writeLine("Card ID: " + id);
+        } else {
+            serial.writeLine("Failed to read a valid card ID.");
+        }
+
+        return id;
     }
+
 
     /*
      * Function to read Data from card
@@ -472,13 +482,17 @@ namespace MFRC522 {
     //% weight=90
     export function read(): string {
         let text = readFromCard()
-        while (!text) {
-            let text = readFromCard()
+        let maxRetries = 2; // 设置最大重试次数
+        let retryCount = 0;
 
+        while (!text && retryCount < maxRetries) {
+            text = readFromCard()
             if (text != '') {
                 return text
             }
+            retryCount++;
         }
+
         return text
     }
 
@@ -493,16 +507,24 @@ namespace MFRC522 {
     //% weight=85
     export function write(text: string) {
         let id = writeToCard(text)
+        let maxRetries = 1; // 设置最大重试次数
+        let retryCount = 0;
 
-        while (!id) {
-            let id = writeToCard(text)
-
+        while (!id && retryCount < maxRetries) {
+            id = writeToCard(text)
             if (id != undefined) {
                 return
             }
+            retryCount++;
         }
-        return
+
+        if (!id) {
+            serial.writeLine("Failed to write data to the card after multiple attempts.");
+        }
+
+        return;
     }
+
 
     /*
      * TUrn off antenna
