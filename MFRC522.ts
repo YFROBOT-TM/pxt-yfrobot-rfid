@@ -454,7 +454,7 @@ namespace MFRC522 {
     //% weight=95
     export function getID() {
         let id = readID()
-        let maxRetries = 2; // 设置最大重试次数
+        let maxRetries = 1; // 设置最大重试次数
         let retryCount = 0;
 
         while (!id && retryCount < maxRetries) {
@@ -482,7 +482,7 @@ namespace MFRC522 {
     //% weight=90
     export function read(): string {
         let text = readFromCard()
-        let maxRetries = 2; // 设置最大重试次数
+        let maxRetries = 1; // 设置最大重试次数
         let retryCount = 0;
 
         while (!text && retryCount < maxRetries) {
