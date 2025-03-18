@@ -8,8 +8,8 @@
     "files": [
         "README.md",
         "MFRC522.ts",
-        "_locales/zh/pxt-mfrc522-jsdoc-strings.json",
-        "_locales/zh/pxt-mfrc522-strings.json"
+        "_locales/zh-cn/pxt-mfrc522-jsdoc-strings.json",
+        "_locales/zh-cn/pxt-mfrc522-strings.json"
     ],
     "testFiles": [
         "test.ts"
