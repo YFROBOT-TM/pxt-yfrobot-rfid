@@ -79,21 +79,24 @@ namespace MFRC522 {
     function readFromCard(): string {
         let [status, Type2] = Request(PICC_REQIDL)
         if (status != 0) {
+            serial.writeLine("Failed to request the card.");
             return null
         }
 
         [status, uid] = AvoidColl()
-
         if (status != 0) {
+            serial.writeLine("Failed to avoid collision.");
             return null
         }
 
-        let id = getIDNum(uid)
-        TagSelect(uid)
-        status = Authent(PICC_AUTHENT1A, 11, Key, uid)
+        // 获取卡片 ID
+        let id = getIDNum(uid);
+        TagSelect(uid);// 选择卡片
+        status = Authent(PICC_AUTHENT1A, 11, Key, uid)// 身份验证
         let data: NumberFormat.UInt8LE[] = []
         let text_read = ''
         let block: number[] = []
+        
         if (status == 0) {
             for (let BlockNum of BlockAdr) {
                 block = ReadRFID(BlockNum)
@@ -109,8 +112,6 @@ namespace MFRC522 {
         Crypto1Stop()
         return text_read
     }
-
-
 
     function writeToCard(txt: string): number {
         [status, Type2] = Request(PICC_REQIDL)
@@ -479,21 +480,26 @@ namespace MFRC522 {
     //% block="Read data"
     //% weight=90
     export function read(): string {
-        let text = readFromCard()
-        let maxRetries = 1; // 设置最大重试次数
-        let retryCount = 0;
+        // 定义最大重试次数常量，方便后续修改
+        const MAX_RETRIES = 1;
+        let text = '';
 
-        while (!text && retryCount < maxRetries) {
-            text = readFromCard()
-            if (text != '') {
-                return text
+        for (let retryCount = 0; retryCount <= MAX_RETRIES; retryCount++) {
+            text = readFromCard();
+
+            // 检查读取到的文本是否不为空
+            if (text) {
+                return text;
             }
-            retryCount++;
+
+            // 如果是最后一次重试且未成功读取到数据，输出错误信息
+            if (retryCount === MAX_RETRIES) {
+                serial.writeLine("Failed to read data from the card after multiple attempts.");
+            }
         }
 
-        return text
+        return text;
     }
-
 
 
 
