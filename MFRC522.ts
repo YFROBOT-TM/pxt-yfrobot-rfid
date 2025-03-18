@@ -166,7 +166,7 @@ namespace MFRC522 {
         recvData.push(pOut2[0])
         recvData.push(pOut2[1])
 
-        const MAX_ATTEMPTS = 500; // 最大尝试次数
+        const MAX_ATTEMPTS = 2; // 最大尝试次数
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, recvData)
