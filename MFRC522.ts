@@ -285,7 +285,7 @@ namespace MFRC522 {
             SetBits(BitFramingReg, 0x80)
         }
 
-        let p = 2000
+        let p = 500
         while (true) {
             n = I2C_Read(ComIrqReg)
             p--
