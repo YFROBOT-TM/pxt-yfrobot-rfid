@@ -107,6 +107,7 @@ namespace MFRC522 {
                     data = data.concat(block)
                 }
             }
+            serial.writeLine("4");
             if (data.length > 0) {// 将数据转换为文本
                 text_read = data.map(c => String.fromCharCode(c)).join('');
             } else {
@@ -541,7 +542,7 @@ namespace MFRC522 {
         }
 
         if (!id) {
-            serial.writeLine("Failed to write data to the card after multiple attempts.");
+            serial.writeLine("Failed to write data to the card.");
         }
 
         return;
