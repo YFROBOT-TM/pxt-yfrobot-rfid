@@ -92,12 +92,15 @@ namespace MFRC522 {
         // 获取卡片 ID
         let id = getIDNum(uid);
         TagSelect(uid);// 选择卡片
+        serial.writeLine("1");
         status = Authent(PICC_AUTHENT1A, 11, Key, uid)// 身份验证
         let data: NumberFormat.UInt8LE[] = []
         let text_read = ''
         let block: number[] = []
+        serial.writeLine("2");
         // 若身份验证成功，读取数据
         if (status == 0) {
+            serial.writeLine("3");
             for (let BlockNum of BlockAdr) {
                 block = ReadRFID(BlockNum)
                 if (block) {
@@ -106,6 +109,8 @@ namespace MFRC522 {
             }
             if (data.length > 0) {// 将数据转换为文本
                 text_read = data.map(c => String.fromCharCode(c)).join('');
+            } else {
+                return null
             }
         } else {
             serial.writeLine("Authentication failed.");
