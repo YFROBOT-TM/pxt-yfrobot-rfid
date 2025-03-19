@@ -175,13 +175,19 @@ namespace MFRC522 {
 
         const MAX_ATTEMPTS = 2; // 最大尝试次数
         let attempts = 0;
+        
+        serial.writeLine("6");
         while (attempts < MAX_ATTEMPTS) {
             let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, recvData)
             if (status == 0) {
                 break; // 成功读取数据，退出循环
             }
             attempts++;
+            
+            serial.writeLine("8");
         }
+        
+        serial.writeLine("7");
 
         if (attempts >= MAX_ATTEMPTS) {
             serial.writeLine(`Timeout while reading block ${blockAdr}`);
