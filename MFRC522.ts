@@ -80,13 +80,13 @@ namespace MFRC522 {
         let [status, Type2] = Request(PICC_REQIDL)
         if (status != 0) {
             serial.writeLine("Failed to request the card.");
-            return null
+            return "";
         }
 
         [status, uid] = AvoidColl()
         if (status != 0) {
             serial.writeLine("Failed to avoid collision.");
-            return null
+            return "";
         }
 
         // 获取卡片 ID
@@ -125,6 +125,8 @@ namespace MFRC522 {
         Crypto1Stop() // 停止加密
         
         serial.writeLine("17");
+        
+        serial.writeLine(text_read);
         return text_read
     }
 
@@ -531,7 +533,7 @@ namespace MFRC522 {
                 return text;
             }else{
                 serial.writeLine("Failed to read data from the card.");
-                return null;
+                return "";
             }
         }
 
