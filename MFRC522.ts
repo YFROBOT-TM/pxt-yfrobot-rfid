@@ -92,15 +92,12 @@ namespace MFRC522 {
         // 获取卡片 ID
         let id = getIDNum(uid);
         TagSelect(uid);// 选择卡片
-        serial.writeLine("1");
         status = Authent(PICC_AUTHENT1A, 11, Key, uid)// 身份验证
         let data: NumberFormat.UInt8LE[] = []
         let text_read = ''
         let block: number[] = []
-        serial.writeLine("2");
         // 若身份验证成功，读取数据
         if (status == 0) {
-            serial.writeLine("3");
             for (let BlockNum of BlockAdr) {
                 // 调用 ReadRFID 函数从指定块地址读取数据
                 block = ReadRFID(BlockNum);
@@ -110,10 +107,7 @@ namespace MFRC522 {
                     data = data.concat(block);
                 }
             }
-            serial.writeLine("4");
             if (data.length > 0) {// 将数据转换为文本
-                
-            serial.writeLine("15");
                 text_read = data.map(c => String.fromCharCode(c)).join('');
                 // 删除 text_read 末尾的空格
                 while (text_read && text_read.slice(-1) === ' ') {
@@ -127,13 +121,7 @@ namespace MFRC522 {
         } else {
             serial.writeLine("Authentication failed.");
         }
-
-        
-        serial.writeLine("16");
         Crypto1Stop() // 停止加密
-        
-        serial.writeLine("17");
-        
         serial.writeLine(text_read);
         return text_read
     }
@@ -191,19 +179,13 @@ namespace MFRC522 {
 
         const MAX_ATTEMPTS = 2; // 最大尝试次数
         let attempts = 0;
-        
-        serial.writeLine("6");
         while (attempts < MAX_ATTEMPTS) {
             let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, recvData)
             if (status == 0) {
                 break; // 成功读取数据，退出循环
             }
             attempts++;
-            
-            serial.writeLine("8");
         }
-        
-        serial.writeLine("7");
 
         if (attempts >= MAX_ATTEMPTS) {
             serial.writeLine(`Timeout while reading block ${blockAdr}`);
@@ -315,8 +297,6 @@ namespace MFRC522 {
             irqEN = 0x77
             waitIRQ = 0x30
         }
-        
-        serial.writeLine("9");
 
         I2C_Write(0x02, irqEN | 0x80)
         ClearBits(ComIrqReg, 0x80)
@@ -332,8 +312,6 @@ namespace MFRC522 {
             SetBits(BitFramingReg, 0x80)
         }
 
-        serial.writeLine("10");
-
         // 等待中断，添加超时处理
         const MAX_ATTEMPTS = 2;
         let attempts = 0;
@@ -344,10 +322,7 @@ namespace MFRC522 {
             }
             attempts++;
         }
-        serial.writeLine("11");
         ClearBits(BitFramingReg, 0x80)
-
-        serial.writeLine("12");
         // 检查是否超时
         if (attempts >= MAX_ATTEMPTS) {
             const statusRegValue = I2C_Read(0x06);
@@ -372,7 +347,6 @@ namespace MFRC522 {
             status = 2; // 超时错误
             serial.writeLine("MFRC522_ToCard: Timeout waiting for interrupt.");
         }
-        serial.writeLine("14");
 
         return [status, returnData, returnLen]
     }
