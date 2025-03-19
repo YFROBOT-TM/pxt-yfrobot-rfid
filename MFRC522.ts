@@ -299,6 +299,8 @@ namespace MFRC522 {
             irqEN = 0x77
             waitIRQ = 0x30
         }
+        
+        serial.writeLine("9");
 
         I2C_Write(0x02, irqEN | 0x80)
         ClearBits(ComIrqReg, 0x80)
@@ -314,9 +316,10 @@ namespace MFRC522 {
             SetBits(BitFramingReg, 0x80)
         }
 
+        serial.writeLine("10");
 
         // 等待中断，添加超时处理
-        const MAX_ATTEMPTS = 5;
+        const MAX_ATTEMPTS = 1;
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             n = I2C_Read(ComIrqReg);
@@ -325,9 +328,10 @@ namespace MFRC522 {
             }
             attempts++;
         }
-
+        serial.writeLine("11");
         ClearBits(BitFramingReg, 0x80)
 
+        serial.writeLine("12");
         // 检查是否超时
         if (attempts < MAX_ATTEMPTS) {
             const statusRegValue = I2C_Read(0x06);
@@ -352,6 +356,7 @@ namespace MFRC522 {
             status = 2; // 超时错误
             serial.writeLine("MFRC522_ToCard: Timeout waiting for interrupt.");
         }
+        serial.writeLine("14");
 
         return [status, returnData, returnLen]
     }
