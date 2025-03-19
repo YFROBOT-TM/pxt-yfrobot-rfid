@@ -109,6 +109,8 @@ namespace MFRC522 {
             }
             serial.writeLine("4");
             if (data.length > 0) {// 将数据转换为文本
+                
+            serial.writeLine("15");
                 text_read = data.map(c => String.fromCharCode(c)).join('');
             } else {
                 serial.writeLine("Data Null.");
@@ -118,7 +120,11 @@ namespace MFRC522 {
             serial.writeLine("Authentication failed.");
         }
 
+        
+        serial.writeLine("16");
         Crypto1Stop() // 停止加密
+        
+        serial.writeLine("17");
         return text_read
     }
 
