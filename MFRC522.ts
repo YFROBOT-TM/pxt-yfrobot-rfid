@@ -510,11 +510,9 @@ namespace MFRC522 {
             // 检查读取到的文本是否不为空
             if (text) {
                 return text;
-            }
-
-            // 如果是最后一次重试且未成功读取到数据，输出错误信息
-            if (retryCount === MAX_RETRIES) {
-                serial.writeLine("Failed to read data from the card after multiple attempts.");
+            }else{
+                serial.writeLine("Failed to read data from the card.");
+                return null;
             }
         }
 
