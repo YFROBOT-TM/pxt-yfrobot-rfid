@@ -111,6 +111,8 @@ namespace MFRC522 {
                 for (let c of data) {
                     text_read = text_read.concat(String.fromCharCode(c))
                 }
+                // 删除 text_read 末尾的空格
+                text_read = text_read.trimEnd();
             }
             // if (data.length > 0) {// 将数据转换为文本
             //     text_read = data.map(c => String.fromCharCode(c)).join('');
