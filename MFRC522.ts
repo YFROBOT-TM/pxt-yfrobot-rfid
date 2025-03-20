@@ -112,7 +112,7 @@ namespace MFRC522 {
                     text_read = text_read.concat(String.fromCharCode(c))
                 }
                 // 删除 text_read 末尾的空格
-                text_read = text_read.trimEnd();
+                text_read = text_read.trim();
             }
             // if (data.length > 0) {// 将数据转换为文本
             //     text_read = data.map(c => String.fromCharCode(c)).join('');
@@ -222,7 +222,7 @@ namespace MFRC522 {
         let Type: number[] = []
         I2C_Write(BitFramingReg, 0x07)
         Type.push(reqMode)
-        
+
         let [status, returnData, returnBits] = MFRC522_ToCard(PCD_TRANSCEIVE, Type)
 
         if ((status != 0) || (returnBits != 16)) {
