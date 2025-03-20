@@ -80,13 +80,13 @@ namespace MFRC522 {
         let [status, Type2] = Request(PICC_REQIDL)
         if (status != 0) {
             serial.writeLine("Failed to request the card.");
-            return '';
+            return null;
         }
 
         [status, uid] = AvoidColl()
         if (status != 0) {
             serial.writeLine("Failed to avoid collision.");
-            return '';
+            return null;
         }
 
         // 获取卡片 ID
@@ -121,7 +121,7 @@ namespace MFRC522 {
             // } 
             else {
                 serial.writeLine("Data Null.");
-                return '';
+                return null;
             }
         } else {
             serial.writeLine("Authentication failed.");
@@ -328,6 +328,7 @@ namespace MFRC522 {
             attempts++;
         }
         ClearBits(BitFramingReg, 0x80)
+        serial.writeLine("12");
         // 检查是否超时
         if (attempts >= MAX_ATTEMPTS) {
             const statusRegValue = I2C_Read(0x06);
