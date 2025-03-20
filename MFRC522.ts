@@ -222,6 +222,7 @@ namespace MFRC522 {
         let Type: number[] = []
         I2C_Write(BitFramingReg, 0x07)
         Type.push(reqMode)
+        
         let [status, returnData, returnBits] = MFRC522_ToCard(PCD_TRANSCEIVE, Type)
 
         if ((status != 0) || (returnBits != 16)) {
@@ -321,7 +322,7 @@ namespace MFRC522 {
         }
 
         // 等待中断，添加超时处理
-        const MAX_ATTEMPTS = 100;
+        const MAX_ATTEMPTS = 50;
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             n = I2C_Read(ComIrqReg);
@@ -512,21 +513,19 @@ namespace MFRC522 {
     //% block="Read data"
     //% weight=90
     export function read(): string {
-        // 定义最大重试次数常量，方便后续修改
-        const MAX_RETRIES = 1;
         let text = '';
         text = readFromCard();
 
         // 检查读取到的文本是否不为空
         if (text) {
             return text;
+        }else {
+            serial.writeLine("Failed to read data from the card.");
+            text = '';
         }
 
-        serial.writeLine("Failed to read data from the card.");
         return text;
     }
-
-
 
     /*
      * Function to write Data
