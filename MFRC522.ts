@@ -511,19 +511,14 @@ namespace MFRC522 {
         // 定义最大重试次数常量，方便后续修改
         const MAX_RETRIES = 1;
         let text = '';
+        text = readFromCard();
 
-        for (let retryCount = 0; retryCount <= MAX_RETRIES; retryCount++) {
-            text = readFromCard();
-
-            // 检查读取到的文本是否不为空
-            if (text) {
-                return text;
-            }else{
-                serial.writeLine("Failed to read data from the card.");
-                return "";
-            }
+        // 检查读取到的文本是否不为空
+        if (text) {
+            return text;
         }
 
+        serial.writeLine("Failed to read data from the card.");
         return text;
     }
 
