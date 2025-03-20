@@ -335,7 +335,7 @@ namespace MFRC522 {
         serial.writeLine("10");
 
         // 等待中断，添加超时处理
-        const MAX_ATTEMPTS = 1;
+        const MAX_ATTEMPTS = 2;
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             n = I2C_Read(ComIrqReg);
