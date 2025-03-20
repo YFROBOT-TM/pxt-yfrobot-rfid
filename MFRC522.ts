@@ -113,7 +113,6 @@ namespace MFRC522 {
                 while (text_read && text_read.slice(-1) === ' ') {
                     text_read = text_read.slice(0, -1);
                 }
-
             } else {
                 serial.writeLine("Data Null.");
                 return ""
