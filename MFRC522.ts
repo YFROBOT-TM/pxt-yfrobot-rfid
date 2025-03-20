@@ -80,13 +80,13 @@ namespace MFRC522 {
         let [status, Type2] = Request(PICC_REQIDL)
         if (status != 0) {
             serial.writeLine("Failed to request the card.");
-            return "";
+            return '';
         }
 
         [status, uid] = AvoidColl()
         if (status != 0) {
             serial.writeLine("Failed to avoid collision.");
-            return "";
+            return '';
         }
 
         // 获取卡片 ID
@@ -107,15 +107,21 @@ namespace MFRC522 {
                     data = data.concat(block);
                 }
             }
-            if (data.length > 0) {// 将数据转换为文本
-                text_read = data.map(c => String.fromCharCode(c)).join('');
-                // // 删除 text_read 末尾的空格
-                // while (text_read && text_read.slice(-1) === ' ') {
-                //     text_read = text_read.slice(0, -1);
-                // }
-            } else {
+            if (data) {
+                for (let c of data) {
+                    text_read = text_read.concat(String.fromCharCode(c))
+                }
+            }
+            // if (data.length > 0) {// 将数据转换为文本
+            //     text_read = data.map(c => String.fromCharCode(c)).join('');
+            //     // // 删除 text_read 末尾的空格
+            //     // while (text_read && text_read.slice(-1) === ' ') {
+            //     //     text_read = text_read.slice(0, -1);
+            //     // }
+            // } 
+            else {
                 serial.writeLine("Data Null.");
-                return ""
+                return '';
             }
         } else {
             serial.writeLine("Authentication failed.");
@@ -312,7 +318,7 @@ namespace MFRC522 {
         }
 
         // 等待中断，添加超时处理
-        const MAX_ATTEMPTS = 2;
+        const MAX_ATTEMPTS = 5;
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             n = I2C_Read(ComIrqReg);
