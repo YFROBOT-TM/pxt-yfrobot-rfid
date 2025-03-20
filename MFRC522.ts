@@ -349,7 +349,7 @@ namespace MFRC522 {
 
         serial.writeLine("12");
         // 检查是否超时
-        if (attempts < MAX_ATTEMPTS) {
+        if (attempts >= MAX_ATTEMPTS) {
             const statusRegValue = I2C_Read(0x06);
             if ((statusRegValue & 0x1B) === 0x00) {
                 status = 0;
