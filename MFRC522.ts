@@ -109,10 +109,10 @@ namespace MFRC522 {
             }
             if (data.length > 0) {// 将数据转换为文本
                 text_read = data.map(c => String.fromCharCode(c)).join('');
-                // 删除 text_read 末尾的空格
-                while (text_read && text_read.slice(-1) === ' ') {
-                    text_read = text_read.slice(0, -1);
-                }
+                // // 删除 text_read 末尾的空格
+                // while (text_read && text_read.slice(-1) === ' ') {
+                //     text_read = text_read.slice(0, -1);
+                // }
             } else {
                 serial.writeLine("Data Null.");
                 return ""
