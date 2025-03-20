@@ -102,9 +102,12 @@ namespace MFRC522 {
         if (status == 0) {
             serial.writeLine("3");
             for (let BlockNum of BlockAdr) {
-                block = ReadRFID(BlockNum)
+                // 调用 ReadRFID 函数从指定块地址读取数据
+                block = ReadRFID(BlockNum);
+                // 检查数据是否成功读取
                 if (block) {
-                    data = data.concat(block)
+                    // 将读取到的数据追加到 data 数组中
+                    data = data.concat(block);
                 }
             }
             serial.writeLine("4");
@@ -113,14 +116,10 @@ namespace MFRC522 {
             serial.writeLine("15");
                 text_read = data.map(c => String.fromCharCode(c)).join('');
                 // 删除 text_read 末尾的空格
-<<<<<<< HEAD
                 while (text_read && text_read.slice(-1) === ' ') {
                     text_read = text_read.slice(0, -1);
                 }
 
-=======
-                text_read = text_read.replace(/\s+$/, '');
->>>>>>> 243b2fe (Update MFRC522.ts)
             } else {
                 serial.writeLine("Data Null.");
                 return ""
