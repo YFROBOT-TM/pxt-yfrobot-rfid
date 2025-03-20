@@ -123,10 +123,11 @@ namespace MFRC522 {
             // } 
             else {
                 serial.writeLine("Data Null.");
-                return '';
+                text_read = ''
             }
         } else {
             serial.writeLine("Authentication failed.");
+            text_read = ''
         }
         Crypto1Stop() // 停止加密
         serial.writeLine(text_read);
