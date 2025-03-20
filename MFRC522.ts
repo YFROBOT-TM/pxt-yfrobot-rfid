@@ -318,7 +318,7 @@ namespace MFRC522 {
         }
 
         // 等待中断，添加超时处理
-        const MAX_ATTEMPTS = 5;
+        const MAX_ATTEMPTS = 100;
         let attempts = 0;
         while (attempts < MAX_ATTEMPTS) {
             n = I2C_Read(ComIrqReg);
@@ -328,11 +328,12 @@ namespace MFRC522 {
             attempts++;
         }
         ClearBits(BitFramingReg, 0x80)
-        serial.writeLine("12");
+        // serial.writeLine("12");
         // 检查是否超时
-        if (attempts >= MAX_ATTEMPTS) {
+        if (attempts < MAX_ATTEMPTS) {
             const statusRegValue = I2C_Read(0x06);
-            if ((statusRegValue & 0x1B) === 0x00) {
+
+            if ((statusRegValue & 0x1B) == 0x00) {
                 status = 0;
                 if (n & irqEN & 0x01) {
                     status = 1;
